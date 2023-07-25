@@ -1,0 +1,178 @@
+---
+title: "InfiltrodiscR: an R package for infiltrometer data analysis and an experience for improving data reproducibility in a soil physics laboratory"
+author:
+  - name: Carolina V. Giraldo
+    affil-id: 1,2
+  - name: Sara E. Acevedo
+    affil-id: 1
+affiliations: 
+  - id: 1
+    name: Pontificia Universidad Católica de Chile
+  - id: 2
+    name: Centro de Desarrollo Urbano Sustentable (CEDEUS)
+format: 
+  pdf:
+    keep-tex: true
+    template-partials: 
+      - title.tex
+    include-in-header:
+      text: |
+        \usepackage[noblocks]{authblk}
+        \renewcommand*{\Authsep}{, }
+        \renewcommand*{\Authand}{, }
+        \renewcommand*{\Authands}{, }
+        \renewcommand\Affilfont{\small}
+bibliography: references.bib
+execute:
+  echo: true
+---
+
+## Introduction
+
+Many soil physics researchers are unacquainted about the functionalities of the programing language R [@10.1016/j.compag.2019.105077]. One main functionality that differentiates it from spreadsheet-based programs is that R scripts are text-based, making them easily shareable and reproducible, allowing to replicate analyses. The challenge of achieving reproducibility persists across various scientific disciplines, extending it to soil science as well [@CORRENDO2023101275]. Also, researchers in soil science, and almost every other field, are being pushed by funding agencies and governmental institutions to increase transparency and reproducibility of their work [@BondLamberty2016]. Open, accessible, reusable, and reproducible soil hydrologic research can have a significant positive impact on the scientific community and broader society [@Hall2022] 
+
+## Motivation
+In 2023, the authors of this work joined to a program lead by Open Life Science; a community-oriented non-profit organisation that promotes open, inclusive and equitable research [@Haynes2023]. In addition, the members of the laboratory already had knowledge of R but there was no repository with common functions for the infiltrometer data analysis. Based on the programming expertise of the laboratory members and the need of adoption of open and reproducible science, the R package InfiltrodiscR was developed [@https://doi.org/10.5281/zenodo.8001894]. The goal of infiltrodiscR is to provide functions for the modeling of data derived from the Minidisk Infiltrometer device.
+
+## R package description
+
+The R package is currently hosted in GitHub. This web-based Git repository hosting service is currently used by many scientists to work in teams or collaborative projects [@BondLamberty2016]. Also, the code was deposited in Zenodo, a free service for hosting data and software that offers long-term (20-year) storage and integration with GitHub [@Hall2022]. The infiltrodiscR package has a DOI so it can be used as reference in publications and clearly define the software version used [@https://doi.org/10.5281/zenodo.8001894].
+
+To install the R package, the users need to run to following lines:
+```{r}
+#| warning: false
+# install.packages("devtools")
+devtools::install_github("biofisicasuelos/infiltrodiscR")
+```
+
+Data needed for running the functions are data stored in **.csv** or **.xlsx** containing columns called as follows:
+
+- texture: soil texture according to USDA: as.character() and lowercase, for example "clay loam".
+- suction: as.character() and lowercase, in this format: "2cm". Values allowed: "0.5cm","1cm","2cm","3cm","4cm","5cm","6cm", and "7cm".
+- volume: volume recorded in the infiltration measurements in mL, as.numeric(). 
+- time: time recorded in the infiltration measurements in seconds, as.numeric(). 
+
+## Main functions:
+
+**`infiltration()`**
+
+This function calculates cumulative infiltration and the square root of time, using time and volume recorded based on the relationship described by @Philip1957THETO:
+
+$$I = C_{1} t + C_{2} t^{0.5} $$
+
+**`vg_par`**
+
+This function returns the parameter *A*, *no_h* and *alpha* related to the van Genuchten parameters [@vanGenuchten1980], from tabulated data calculated for a radius of 2.25 cm, including 12 soil texture classes and suctions from -0.5 cm to -7 cm. Table 1 show selected data gathered from @METER and @Carsel1988.
+
+```{r}
+#| warning: false
+#| echo: false
+library(tidyverse)
+infiltrodiscR::vg_parameters_bytexture_radius2.25 %>% 
+  dplyr::select(texture,alpha,'n/ho','2cm','4cm', '6cm') %>% 
+  kableExtra::kable(caption = "Table 1. Selected data from the InfiltrodiscR package")
+```
+
+
+**`parameter_A`**
+
+This function returns the parameter *A* calculated from the equation based on the work developed by @Zhang1997, where the parameters *A*, *no_h* and *alpha* determined previously are input in the following equations described in @METER and @Surda2019
+
+$$A = \frac{11.65(n^{0.1}-1)exp[2.92(n - 1.9)\alpha h_{0}]}{(\alpha r_{0})^{0.91}} ; n\geq 1.9 $$
+$$A = \frac{11.65(n^{0.1}-1)exp[7.5(n - 1.9)\alpha h_{0}]}{(\alpha r_{0})^{0.91}} ; n < 1.9 $$
+{{< pagebreak >}}
+
+## Practical example
+First, some dummy data about infiltration and soils is created. In this case: "soil_a" and "soil_b".
+```{r}
+infiltration_data <- tibble(
+  soil = c(rep("soil_a",11), rep("soil_b",11)),
+  time = c(0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, # seconds
+           0, 35, 65, 95, 125, 155, 185, 215, 245, 275, 305),
+  volume = c(95, 89, 86, 83, 80, 77, 74, 73, 71, 69, 67, # mL
+             83, 77, 64, 61, 58, 45, 42, 35, 29, 17, 15)
+)
+
+soil_data <- tibble(soil = c("soil_a", "soil_b"),
+                    texture = c("sandy loam", "clay loam"), #USDA
+                    suction = c("4cm","2cm"),
+                    om_content = c(1,10))
+
+head(infiltration_data,4) # check the infiltration data
+
+soil_data # check the soil data
+```
+Then, using the function **`infiltration()`** the cumulative infiltration and the square root of time are calculated. Notice that the package was coded tidy-oriented (tidyverse package is required). Also, it is recommended to use nested tibbles for data manipulation. 
+```{r}
+infilt_cum_sqrt <-
+infiltration_data %>% 
+group_by(soil) %>% # grouped calculation by soil
+nest() %>% 
+mutate(data = map(data, ~ infiltrodiscR::infiltration(.), data = .x)) 
+
+infilt_cum_sqrt # nested tibble
+```
+The nested tibble has the infiltration calculation for each soil. For details of **`infilt_cum_sqrt`**, the **`unnest()`** function can be used
+```{r}
+infilt_cum_sqrt %>% 
+  unnest(data)
+```
+Now the soil data can be joined to the infiltration data and the Van Genuchten parameters can be obtained. It is mandatory to have a column called **`texture`** and another **`suction`**
+```{r}
+infilt_cum_sqrt %>% 
+  left_join(soil_data) %>% 
+  infiltrodiscR::vg_par()
+```
+The hydraulic conductivity of the soil K at a specific suction is calculated as: $$K_{(h)} = \frac{C_{1}}{A}$$ 
+Parameter C~1~ is calculated fitting a polynomial function of the second degree (y = ax2+b), where a is parameter C~1~, x is the square root of time and y is the cumulative infiltration calculated previously. For this step, we use the package broom and base R. The column estimate corresponds to the parameter C~1~. 
+```{r}
+processed_data <- 
+infilt_cum_sqrt %>% 
+  left_join(soil_data) %>% 
+  infiltrodiscR::vg_par() %>% 
+    mutate(
+    fit = map(data,
+              ~ lm(infiltration ~ poly(sqrt_time, 2, raw = TRUE),
+                   data = .x)), #polynomial function
+    tidied = map(fit, broom::tidy) #coefficients
+  ) %>% 
+  unnest(tidied) %>% 
+filter(term == "poly(sqrt_time, 2, raw = TRUE)2") %>% #slope
+rename(C1 = estimate) 
+```
+
+{{< pagebreak >}}
+
+Finally, the hydraulic conductivity of the soil K is calculating using the parameter C~1~ and A. If seconds and mL were used as inputs for infiltration data, the units of K are cm/s. 
+```{r}
+processed_data %>% 
+  infiltrodiscR::parameter_A() %>% 
+  mutate(K_h = C1 / parameter_A) %>% 
+  select(soil, texture, suction, K_h)
+```
+Using this tidy-oriented approach, it is simple to complement the functions presented with plotting. 
+```{r}
+infiltration_plot <- 
+infilt_cum_sqrt %>% 
+  left_join(soil_data) %>% 
+  mutate(plot = map2(
+    data, soil, 
+    ~ ggplot(data = .x, aes(x = sqrt_time, y = infiltration)) +
+      ggtitle(glue::glue("Soil : {soil}
+                   Suction : {suction}")) +
+      stat_smooth(method='lm', formula = y~poly(x,2)) +
+      geom_point() +
+      theme_bw()))
+
+patchwork::wrap_plots(infiltration_plot$plot, ncol = 2)  
+```
+## Conclusions and future work
+The learning curve in R programming and open science practices is not the same for every researcher, nor is it a dedicated line of research in graduate programs dedicated to soil physics. Therefore, this experience in creating an R package homogenizing the data analysis methodology in a laboratory shows that if there is interest in developing this approach, further advances in collaboration and reproducibility can be made. 
+
+## Acknowledgements
+The authors thank the OLS team for their time and dedication in motivating researchers to adopt open software practices. Sara Acevedo thanks the research support provided by CEDEUS (ANID/FONDAP 1522A0002) and the financial support from Postdoctorado Ingeniería UC 2023. 
+
+
+
+## References
+
