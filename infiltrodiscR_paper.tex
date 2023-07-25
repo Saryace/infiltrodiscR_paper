@@ -227,8 +227,8 @@ an experience for improving data reproducibility in a soil physics
 laboratory}
 
 
-\author[1,2]{Carolina V. Giraldo}
-\author[1]{Sara E. Acevedo}
+\author[1]{Carolina V. Giraldo}
+\author[1,2]{Sara E. Acevedo}
 
 \affil[1]{Pontificia Universidad Católica de Chile}
 \affil[2]{Centro de Desarrollo Urbano Sustentable (CEDEUS)}
@@ -237,7 +237,7 @@ laboratory}
 \date{}
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, breakable, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, borderline west={3pt}{0pt}{shadecolor}, frame hidden, boxrule=0pt, sharp corners, enhanced, interior hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{introduction}{%
 \subsection{Introduction}\label{introduction}}
@@ -254,7 +254,7 @@ agencies and governmental institutions to increase transparency and
 reproducibility of their work (Bond-Lamberty, Smith, and Bailey 2016).
 Open, accessible, reusable, and reproducible soil hydrologic research
 can have a significant positive impact on the scientific community and
-broader society (Hall et al. 2022)
+broader society (Hall et al. 2022).
 
 \hypertarget{motivation}{%
 \subsection{Motivation}\label{motivation}}
@@ -268,7 +268,13 @@ Based on the programming expertise of the laboratory members and the
 need of adoption of open and reproducible science, the R package
 InfiltrodiscR was developed (Acevedo and Giraldo 2023). The goal of
 infiltrodiscR is to provide functions for the modeling of data derived
-from the Minidisk Infiltrometer device.
+from the Minidisk Infiltrometer device. To determine the unsaturated
+hydraulic conductivity for a specific suction, infiltrodiscR uses the
+relationship between cumulative infiltration vs.~time. The hydraulic
+conductivity of the soil (K\textsubscript{(h)}) is calculated as the
+ratio of C\textsubscript{1}(the slope of the curve of the cumulative
+infiltration vs.~the square root of time) and A (parameter depending on
+the van Genuchten parameters, the disk radius and the applied suction).
 
 \hypertarget{r-package-description}{%
 \subsection{R package description}\label{r-package-description}}
@@ -280,7 +286,7 @@ in teams or collaborative projects (Bond-Lamberty, Smith, and Bailey
 hosting data and software that offers long-term (20-year) storage and
 integration with GitHub (Hall et al. 2022). The infiltrodiscR package
 has a DOI so it can be used as reference in publications and clearly
-define the software version used.
+define the software version used (Acevedo and Giraldo 2023).
 
 To install the R package, the users need to run to following lines:
 
@@ -610,15 +616,21 @@ the same for every researcher, nor is it a dedicated line of research in
 graduate programs dedicated to soil physics. Therefore, this experience
 in creating an R package homogenizing the data analysis methodology in a
 laboratory shows that if there is interest in developing this approach,
-further advances in collaboration and reproducibility can be made.
+further advances in collaboration and reproducibility can be made. Also,
+based on the R background of the users of the package, the functions
+were developed using the same the grammar, pipelines, and data
+visualization practices of tidyverse, which allowed it to be easily
+adopted by the researchers.
 
 \hypertarget{acknowledgements}{%
 \subsection{Acknowledgements}\label{acknowledgements}}
 
 The authors thank the OLS team for their time and dedication in
-motivating researchers to adopt open software practices. Sara Acevedo
-thanks the research support provided by CEDEUS (ANID/FONDAP 1522A0002)
-and the financial support from Postdoctorado Ingeniería UC 2023.
+motivating researchers to adopt open software practices. Carolina
+Giraldo thanks VRI/Faculty of Engineering PUC (Pontificia Universidad
+Católica de Chile) Ph.D.~fellowship.Sara Acevedo thanks the research
+support provided by CEDEUS (ANID/FONDAP 1522A0002) and the financial
+support from Postdoctorado Ingeniería PUC 2023.
 
 \hypertarget{references}{%
 \subsection*{References}\label{references}}

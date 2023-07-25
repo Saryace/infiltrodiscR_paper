@@ -2,9 +2,9 @@
 title: "InfiltrodiscR: an R package for infiltrometer data analysis and an experience for improving data reproducibility in a soil physics laboratory"
 author:
   - name: Carolina V. Giraldo
-    affil-id: 1,2
-  - name: Sara E. Acevedo
     affil-id: 1
+  - name: Sara E. Acevedo
+    affil-id: 1,2
 affiliations: 
   - id: 1
     name: Pontificia Universidad Católica de Chile
@@ -29,10 +29,10 @@ execute:
 
 ## Introduction
 
-Many soil physics researchers are unacquainted about the functionalities of the programing language R [@10.1016/j.compag.2019.105077]. One main functionality that differentiates it from spreadsheet-based programs is that R scripts are text-based, making them easily shareable and reproducible, allowing to replicate analyses. The challenge of achieving reproducibility persists across various scientific disciplines, extending it to soil science as well [@CORRENDO2023101275]. Also, researchers in soil science, and almost every other field, are being pushed by funding agencies and governmental institutions to increase transparency and reproducibility of their work [@BondLamberty2016]. Open, accessible, reusable, and reproducible soil hydrologic research can have a significant positive impact on the scientific community and broader society [@Hall2022] 
+Many soil physics researchers are unacquainted about the functionalities of the programing language R [@10.1016/j.compag.2019.105077]. One main functionality that differentiates it from spreadsheet-based programs is that R scripts are text-based, making them easily shareable and reproducible, allowing to replicate analyses. The challenge of achieving reproducibility persists across various scientific disciplines, extending it to soil science as well [@CORRENDO2023101275]. Also, researchers in soil science, and almost every other field, are being pushed by funding agencies and governmental institutions to increase transparency and reproducibility of their work [@BondLamberty2016]. Open, accessible, reusable, and reproducible soil hydrologic research can have a significant positive impact on the scientific community and broader society [@Hall2022].  
 
 ## Motivation
-In 2023, the authors of this work joined to a program lead by Open Life Science; a community-oriented non-profit organisation that promotes open, inclusive and equitable research [@Haynes2023]. In addition, the members of the laboratory already had knowledge of R but there was no repository with common functions for the infiltrometer data analysis. Based on the programming expertise of the laboratory members and the need of adoption of open and reproducible science, the R package InfiltrodiscR was developed [@https://doi.org/10.5281/zenodo.8001894]. The goal of infiltrodiscR is to provide functions for the modeling of data derived from the Minidisk Infiltrometer device.
+In 2023, the authors of this work joined to a program lead by Open Life Science; a community-oriented non-profit organisation that promotes open, inclusive and equitable research [@Haynes2023]. In addition, the members of the laboratory already had knowledge of R but there was no repository with common functions for the infiltrometer data analysis. Based on the programming expertise of the laboratory members and the need of adoption of open and reproducible science, the R package InfiltrodiscR was developed [@https://doi.org/10.5281/zenodo.8001894]. The goal of infiltrodiscR is to provide functions for the modeling of data derived from the Minidisk Infiltrometer device. To determine the unsaturated hydraulic conductivity for a specific suction, infiltrodiscR uses the relationship between cumulative infiltration vs. time. The hydraulic conductivity of the soil (K~(h)~) is calculated as the ratio of C~1~(the slope of the curve of the cumulative infiltration vs. the square root of time) and A (parameter depending on the van Genuchten parameters, the disk radius and the applied suction). 
 
 ## R package description
 
@@ -167,10 +167,10 @@ infilt_cum_sqrt %>%
 patchwork::wrap_plots(infiltration_plot$plot, ncol = 2)  
 ```
 ## Conclusions and future work
-The learning curve in R programming and open science practices is not the same for every researcher, nor is it a dedicated line of research in graduate programs dedicated to soil physics. Therefore, this experience in creating an R package homogenizing the data analysis methodology in a laboratory shows that if there is interest in developing this approach, further advances in collaboration and reproducibility can be made. 
+The learning curve in R programming and open science practices is not the same for every researcher, nor is it a dedicated line of research in graduate programs dedicated to soil physics. Therefore, this experience in creating an R package homogenizing the data analysis methodology in a laboratory shows that if there is interest in developing this approach, further advances in collaboration and reproducibility can be made. Also, based on the R background of the users of the package, the functions were developed using the same the grammar, pipelines, and data visualization practices of tidyverse, which allowed it to be easily adopted by the researchers. 
 
 ## Acknowledgements
-The authors thank the OLS team for their time and dedication in motivating researchers to adopt open software practices. Sara Acevedo thanks the research support provided by CEDEUS (ANID/FONDAP 1522A0002) and the financial support from Postdoctorado Ingeniería UC 2023. 
+The authors thank the OLS team for their time and dedication in motivating researchers to adopt open software practices. Carolina Giraldo thanks VRI/Faculty of Engineering PUC (Pontificia Universidad Católica de Chile) Ph.D. fellowship.Sara Acevedo thanks the research support provided by CEDEUS (ANID/FONDAP 1522A0002) and the financial support from Postdoctorado Ingeniería PUC 2023. 
 
 
 
