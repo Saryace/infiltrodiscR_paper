@@ -237,24 +237,44 @@ laboratory}
 \date{}
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, borderline west={3pt}{0pt}{shadecolor}, frame hidden, boxrule=0pt, sharp corners, enhanced, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
+
+\hypertarget{abstract}{%
+\subsection{Abstract}\label{abstract}}
+
+This paper addresses the increasing interest and knowledge among soil
+physics researchers to use R, language which offers distinct advantages
+in terms of data reproducibility. Achieving reproducibility is a
+challenge in various scientific fields, including soil science, and is
+further driven by the demand for transparency from funding agencies and
+governmental institutions. Open and reproducible soil physics research
+can have significant positive impacts on the scientific community.
+Motivated by the goal of promoting open and equitable research, the
+authors leveraged the existing knowledge of R in a soil physics
+laboratory (Soil Biophysics Laboratory) and the need for a repository
+with common functions for infiltrometer data analysis, developed the R
+package infiltrodiscR. The goal of infiltrodiscR is to provide functions
+for the fitting of data derived from the Minidisk Infiltrometer device.
 
 \hypertarget{introduction}{%
 \subsection{Introduction}\label{introduction}}
 
 Many soil physics researchers are unacquainted about the functionalities
-of the programing language R (Sousa et al. 2020). One main functionality
-that differentiates it from spreadsheet-based programs is that R scripts
-are text-based, making them easily shareable and reproducible, allowing
-to replicate analyses. The challenge of achieving reproducibility
-persists across various scientific disciplines, extending it to soil
-science as well (Correndo et al. 2023). Also, researchers in soil
-science, and almost every other field, are being pushed by funding
-agencies and governmental institutions to increase transparency and
-reproducibility of their work (Bond-Lamberty, Smith, and Bailey 2016).
-Open, accessible, reusable, and reproducible soil hydrologic research
-can have a significant positive impact on the scientific community and
-broader society (Hall et al. 2022).
+of the programing language R (Sousa et al. 2020). R is a is a
+programming language primarily used for statistical and data analysis.
+One main functionality that differentiates R from spreadsheet-based
+programs is that R scripts are text-based, making them easily shareable
+and reproducible, allowing to replicate analyses. The challenge of
+achieving reproducibility persists across various scientific
+disciplines, extending it to soil science as well (Correndo et al.
+2023). Also, researchers in soil science, and almost every other field,
+are being pushed by funding agencies and governmental institutions to
+increase transparency and reproducibility of their work (Bond-Lamberty,
+Smith, and Bailey 2016). Open, accessible, reusable, and reproducible
+soil hydrologic research can have a significant positive impact on the
+scientific community and broader society (Hall et al. 2022). In this
+work, an R package (infiltrodiscR) is presented containing R functions
+compatible with tidyverse package for infiltrometer data analysis.
 
 \hypertarget{motivation}{%
 \subsection{Motivation}\label{motivation}}
@@ -262,19 +282,20 @@ broader society (Hall et al. 2022).
 In 2023, the authors of this work joined to a program lead by Open Life
 Science; a community-oriented non-profit organisation that promotes
 open, inclusive and equitable research (Haynes 2023). In addition, the
-members of the laboratory already had knowledge of R but there was no
-repository with common functions for the infiltrometer data analysis.
-Based on the programming expertise of the laboratory members and the
-need of adoption of open and reproducible science, the R package
-InfiltrodiscR was developed (Acevedo and Giraldo 2023). The goal of
-infiltrodiscR is to provide functions for the modeling of data derived
-from the Minidisk Infiltrometer device. To determine the unsaturated
-hydraulic conductivity for a specific suction, infiltrodiscR uses the
-relationship between cumulative infiltration vs.~time. The hydraulic
-conductivity of the soil (K\textsubscript{(h)}) is calculated as the
-ratio of C\textsubscript{1}(the slope of the curve of the cumulative
-infiltration vs.~the square root of time) and A (parameter depending on
-the van Genuchten parameters, the disk radius and the applied suction).
+members of the Soil Biophysics laboratory (Soil Biophysics Lab 2023)
+already had knowledge of R but there was no repository with common
+functions for the infiltrometer data analysis. Based on the programming
+expertise of the laboratory members and the need of adoption of open and
+reproducible science, the R package InfiltrodiscR was developed (Acevedo
+and Giraldo 2023). The goal of infiltrodiscR is to provide functions for
+the fitting of data derived from the Minidisk Infiltrometer device. To
+determine the unsaturated hydraulic conductivity for a specific suction,
+infiltrodiscR uses the relationship between cumulative infiltration
+vs.~time. The hydraulic conductivity of the soil (K\textsubscript{(h)})
+is calculated as the ratio of C\textsubscript{1}(the slope of the curve
+of the cumulative infiltration vs.~the square root of time) and A
+(parameter depending on the van Genuchten parameters, the disk radius
+and the applied suction) based on the equation proposed by Zhang (1997).
 
 \hypertarget{r-package-description}{%
 \subsection{R package description}\label{r-package-description}}
@@ -317,6 +338,8 @@ or \textbf{.xlsx} containing columns called as follows:
   as.numeric().
 \end{itemize}
 
+\newpage{}
+
 \hypertarget{main-functions}{%
 \subsection{Main functions:}\label{main-functions}}
 
@@ -326,15 +349,13 @@ This function calculates cumulative infiltration and the square root of
 time, using time and volume recorded based on the relationship described
 by Philip (1957):
 
-\[I = C_{1} t + C_{2} t^{0.5} \]
-
-\textbf{\texttt{vg\_par}}
+\[I = C_{1} t + C_{2} t^{0.5} \] \textbf{\texttt{vg\_par()}}
 
 This function returns the parameter \emph{A}, \emph{no\_h} and
 \emph{alpha} related to the van Genuchten parameters (Genuchten 1980),
 from tabulated data calculated for a radius of 2.25 cm, including 12
 soil texture classes and suctions from -0.5 cm to -7 cm. Table 1 show
-selected data gathered from MeterGroup (2023) and Carsel and Parrish
+selected data gathered from Meter Group (2023) and Carsel and Parrish
 (1988).
 
 \begin{table}
@@ -372,12 +393,12 @@ clay & 0.008 & 1.09 & 4.300401 & 4.7393888 & 5.2231893\\
 \end{tabular}
 \end{table}
 
-\textbf{\texttt{parameter\_A}}
+\textbf{\texttt{parameter\_A()}}
 
 This function returns the parameter \emph{A} calculated from the
 equation based on the work developed by Zhang (1997), where the
 parameters \emph{A}, \emph{no\_h} and \emph{alpha} determined previously
-are input in the following equations described in MeterGroup (2023) and
+are input in the following equations described in Meter Group (2023) and
 Surda et al. (2019)
 
 \[A = \frac{11.65(n^{0.1}-1)exp[2.92(n - 1.9)\alpha h_{0}]}{(\alpha r_{0})^{0.91}} ; n\geq 1.9 \]
@@ -388,8 +409,14 @@ Surda et al. (2019)
 \hypertarget{practical-example}{%
 \subsection{Practical example}\label{practical-example}}
 
-First, some dummy data about infiltration and soils is created. In this
-case: ``soil\_a'' and ``soil\_b''.
+First, some dummy data about infiltration and soils is created. Volume
+recorded in the infiltration measurements must be in mL and time in
+seconds. Both variables must be numeric. In order to join data
+(combining two datasets: infiltration and soil data), a common
+identifier or ID column must be present in both datasets. Soil and
+infiltration data must have a common column describing each unique soil
+and measurement. In this example, a column called soil contains
+measurements of ``soil\_a'' and ``soil\_b'' in both datasets
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -434,10 +461,19 @@ case: ``soil\_a'' and ``soil\_b''.
 2 soil_b clay loam  2cm             10
 \end{verbatim}
 
+\newpage{}
+
 Then, using the function \textbf{\texttt{infiltration()}} the cumulative
 infiltration and the square root of time are calculated. Notice that the
 package was coded tidy-oriented (tidyverse package is required). Also,
-it is recommended to use nested tibbles for data manipulation.
+it is recommended to use nested tibbles for data manipulation. A nested
+tibble stores dataframes as list-columns within another dataframe,
+creating a data structure with multiple layers of data. List-columns are
+particularly useful for researchers because the elements (e.g., fitting
+models and estimated values) of the list-columns can be easily processed
+by iteratively applying a function for estimation and summary to each
+element of the list-column using the functional programming functions
+(e.g., map()) in the purrr package (Lee, Sriutaisuk, and Kim 2019)
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -467,27 +503,25 @@ details of \textbf{\texttt{infilt\_cum\_sqrt}}, the
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{infilt\_cum\_sqrt }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{unnest}\NormalTok{(data)}
+  \FunctionTok{unnest}\NormalTok{(data) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{head}\NormalTok{(}\DecValTok{6}\NormalTok{) }\CommentTok{\# check }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-# A tibble: 22 x 6
-# Groups:   soil [2]
-   soil    time volume sqrt_time volume_infiltrated infiltration
-   <chr>  <dbl>  <dbl>     <dbl>              <dbl>        <dbl>
- 1 soil_a     0     95      0                     0         0   
- 2 soil_a    30     89      5.48                  6         0.38
- 3 soil_a    60     86      7.75                  9         0.57
- 4 soil_a    90     83      9.49                 12         0.75
- 5 soil_a   120     80     11.0                  15         0.94
- 6 soil_a   150     77     12.2                  18         1.13
- 7 soil_a   180     74     13.4                  21         1.32
- 8 soil_a   210     73     14.5                  22         1.38
- 9 soil_a   240     71     15.5                  24         1.51
-10 soil_a   270     69     16.4                  26         1.63
-# i 12 more rows
+# A tibble: 6 x 6
+# Groups:   soil [1]
+  soil    time volume sqrt_time volume_infiltrated infiltration
+  <chr>  <dbl>  <dbl>     <dbl>              <dbl>        <dbl>
+1 soil_a     0     95      0                     0         0   
+2 soil_a    30     89      5.48                  6         0.38
+3 soil_a    60     86      7.75                  9         0.57
+4 soil_a    90     83      9.49                 12         0.75
+5 soil_a   120     80     11.0                  15         0.94
+6 soil_a   150     77     12.2                  18         1.13
 \end{verbatim}
+
+\newpage{}
 
 Now the soil data can be joined to the infiltration data and the Van
 Genuchten parameters can be obtained. It is mandatory to have a column
@@ -679,13 +713,23 @@ Haynes, Sam. 2023. {``{OLS}: Capacity Building in Open Science with a
 Peer-Led, Global, and Diverse Community.''} \emph{Edinburgh Open
 Research}, June. \url{https://doi.org/10.2218/eor.2023.8120}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-Lee2019}{}}%
+Lee, Sunbok, Suppanut Sriutaisuk, and Hanjoe Kim. 2019. {``Using the
+Tidyverse Package in r for Simulation Studies in {SEM}.''}
+\emph{Structural Equation Modeling: A Multidisciplinary Journal} 27 (3):
+468--82. \url{https://doi.org/10.1080/10705511.2019.1644515}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-METER}{}}%
-MeterGroup. 2023. \emph{Mini Disk Infiltrometer - Meter Group}.
+Meter Group. 2023. \emph{Mini Disk Infiltrometer - Meter Group}.
 \url{http://publications.metergroup.com/Manuals/20421_Mini_Disk_Manual_Web.pdf}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Philip1957THETO}{}}%
 Philip, J. R. 1957. {``THE THEORY OF INFILTRATION: 4. SORPTIVITY AND
 ALGEBRAIC INFILTRATION EQUATIONS.''} \emph{Soil Science} 84: 257--64.
+
+\leavevmode\vadjust pre{\hypertarget{ref-SoilBiophysics}{}}%
+Soil Biophysics Lab. 2023. \emph{Github Account}.
+\url{https://github.com/biofisicasuelos}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-10.1016ux2fj.compag.2019.105077}{}}%
 Sousa, Decı́ola Fernandes de, Sueli Rodrigues, Herdjania Veras de Lima,

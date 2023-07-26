@@ -27,12 +27,16 @@ execute:
   echo: true
 ---
 
+## Abstract
+
+This paper addresses the increasing interest and knowledge among soil physics researchers to use R, language which offers distinct advantages in terms of data reproducibility. Achieving reproducibility is a challenge in various scientific fields, including soil science, and is further driven by the demand for transparency from funding agencies and governmental institutions. Open and reproducible soil physics research can have significant positive impacts on the scientific community. Motivated by the goal of promoting open and equitable research, the authors leveraged the existing knowledge of R in a soil physics laboratory (Soil Biophysics Laboratory) and the need for a repository with common functions for infiltrometer data analysis, developed the R package infiltrodiscR. The goal of infiltrodiscR is to provide functions for the fitting of data derived from the Minidisk Infiltrometer device. 
+
 ## Introduction
 
-Many soil physics researchers are unacquainted about the functionalities of the programing language R [@10.1016/j.compag.2019.105077]. One main functionality that differentiates it from spreadsheet-based programs is that R scripts are text-based, making them easily shareable and reproducible, allowing to replicate analyses. The challenge of achieving reproducibility persists across various scientific disciplines, extending it to soil science as well [@CORRENDO2023101275]. Also, researchers in soil science, and almost every other field, are being pushed by funding agencies and governmental institutions to increase transparency and reproducibility of their work [@BondLamberty2016]. Open, accessible, reusable, and reproducible soil hydrologic research can have a significant positive impact on the scientific community and broader society [@Hall2022].  
+Many soil physics researchers are unacquainted about the functionalities of the programing language R [@10.1016/j.compag.2019.105077]. R is a is a programming language primarily used for statistical and data analysis. One main functionality that differentiates R from spreadsheet-based programs is that R scripts are text-based, making them easily shareable and reproducible, allowing to replicate analyses. The challenge of achieving reproducibility persists across various scientific disciplines, extending it to soil science as well [@CORRENDO2023101275]. Also, researchers in soil science, and almost every other field, are being pushed by funding agencies and governmental institutions to increase transparency and reproducibility of their work [@BondLamberty2016]. Open, accessible, reusable, and reproducible soil hydrologic research can have a significant positive impact on the scientific community and broader society [@Hall2022]. In this work, an R package (infiltrodiscR) is presented containing R functions compatible with tidyverse package for infiltrometer data analysis.
 
 ## Motivation
-In 2023, the authors of this work joined to a program lead by Open Life Science; a community-oriented non-profit organisation that promotes open, inclusive and equitable research [@Haynes2023]. In addition, the members of the laboratory already had knowledge of R but there was no repository with common functions for the infiltrometer data analysis. Based on the programming expertise of the laboratory members and the need of adoption of open and reproducible science, the R package InfiltrodiscR was developed [@https://doi.org/10.5281/zenodo.8001894]. The goal of infiltrodiscR is to provide functions for the modeling of data derived from the Minidisk Infiltrometer device. To determine the unsaturated hydraulic conductivity for a specific suction, infiltrodiscR uses the relationship between cumulative infiltration vs. time. The hydraulic conductivity of the soil (K~(h)~) is calculated as the ratio of C~1~(the slope of the curve of the cumulative infiltration vs. the square root of time) and A (parameter depending on the van Genuchten parameters, the disk radius and the applied suction). 
+In 2023, the authors of this work joined to a program lead by Open Life Science; a community-oriented non-profit organisation that promotes open, inclusive and equitable research [@Haynes2023]. In addition, the members of the Soil Biophysics laboratory [@SoilBiophysics] already had knowledge of R but there was no repository with common functions for the infiltrometer data analysis. Based on the programming expertise of the laboratory members and the need of adoption of open and reproducible science, the R package InfiltrodiscR was developed [@https://doi.org/10.5281/zenodo.8001894]. The goal of infiltrodiscR is to provide functions for the fitting of data derived from the Minidisk Infiltrometer device. To determine the unsaturated hydraulic conductivity for a specific suction, infiltrodiscR uses the relationship between cumulative infiltration vs. time. The hydraulic conductivity of the soil (K~(h)~) is calculated as the ratio of C~1~(the slope of the curve of the cumulative infiltration vs. the square root of time) and A (parameter depending on the van Genuchten parameters, the disk radius and the applied suction) based on the equation proposed by @Zhang1997. 
 
 ## R package description
 
@@ -52,6 +56,8 @@ Data needed for running the functions are data stored in **.csv** or **.xlsx** c
 - volume: volume recorded in the infiltration measurements in mL, as.numeric(). 
 - time: time recorded in the infiltration measurements in seconds, as.numeric(). 
 
+{{< pagebreak >}}
+
 ## Main functions:
 
 **`infiltration()`**
@@ -59,8 +65,7 @@ Data needed for running the functions are data stored in **.csv** or **.xlsx** c
 This function calculates cumulative infiltration and the square root of time, using time and volume recorded based on the relationship described by @Philip1957THETO:
 
 $$I = C_{1} t + C_{2} t^{0.5} $$
-
-**`vg_par`**
+**`vg_par()`**
 
 This function returns the parameter *A*, *no_h* and *alpha* related to the van Genuchten parameters [@vanGenuchten1980], from tabulated data calculated for a radius of 2.25 cm, including 12 soil texture classes and suctions from -0.5 cm to -7 cm. Table 1 show selected data gathered from @METER and @Carsel1988.
 
@@ -73,8 +78,7 @@ infiltrodiscR::vg_parameters_bytexture_radius2.25 %>%
   kableExtra::kable(caption = "Table 1. Selected data from the InfiltrodiscR package")
 ```
 
-
-**`parameter_A`**
+**`parameter_A()`**
 
 This function returns the parameter *A* calculated from the equation based on the work developed by @Zhang1997, where the parameters *A*, *no_h* and *alpha* determined previously are input in the following equations described in @METER and @Surda2019
 
@@ -83,7 +87,8 @@ $$A = \frac{11.65(n^{0.1}-1)exp[7.5(n - 1.9)\alpha h_{0}]}{(\alpha r_{0})^{0.91}
 {{< pagebreak >}}
 
 ## Practical example
-First, some dummy data about infiltration and soils is created. In this case: "soil_a" and "soil_b".
+First, some dummy data about infiltration and soils is created. Volume recorded in the infiltration measurements must be in mL and time in seconds. Both variables must be numeric. In order to join data (combining two datasets: infiltration and soil data), a common identifier or ID column must be present in both datasets. Soil and infiltration data must have a common column describing each unique soil and measurement. In this example, a column called soil contains measurements of "soil_a" and "soil_b" in both datasets 
+
 ```{r}
 infiltration_data <- tibble(
   soil = c(rep("soil_a",11), rep("soil_b",11)),
@@ -102,7 +107,9 @@ head(infiltration_data,4) # check the infiltration data
 
 soil_data # check the soil data
 ```
-Then, using the function **`infiltration()`** the cumulative infiltration and the square root of time are calculated. Notice that the package was coded tidy-oriented (tidyverse package is required). Also, it is recommended to use nested tibbles for data manipulation. 
+{{< pagebreak >}}
+
+Then, using the function **`infiltration()`** the cumulative infiltration and the square root of time are calculated. Notice that the package was coded tidy-oriented (tidyverse package is required). Also, it is recommended to use nested tibbles for data manipulation.  A nested tibble stores dataframes as list-columns within another dataframe, creating a data structure with multiple layers of data. List-columns are particularly useful for researchers because the elements (e.g., fitting models and estimated values) of the list-columns can be easily processed by iteratively applying a function for estimation and summary to each element of the list-column using the functional programming functions (e.g., map()) in the purrr package [@Lee2019]
 ```{r}
 infilt_cum_sqrt <-
 infiltration_data %>% 
@@ -115,8 +122,12 @@ infilt_cum_sqrt # nested tibble
 The nested tibble has the infiltration calculation for each soil. For details of **`infilt_cum_sqrt`**, the **`unnest()`** function can be used
 ```{r}
 infilt_cum_sqrt %>% 
-  unnest(data)
+  unnest(data) %>% 
+  head(6) # check 
 ```
+
+{{< pagebreak >}}
+
 Now the soil data can be joined to the infiltration data and the Van Genuchten parameters can be obtained. It is mandatory to have a column called **`texture`** and another **`suction`**
 ```{r}
 infilt_cum_sqrt %>% 
@@ -170,7 +181,7 @@ patchwork::wrap_plots(infiltration_plot$plot, ncol = 2)
 The learning curve in R programming and open science practices is not the same for every researcher, nor is it a dedicated line of research in graduate programs dedicated to soil physics. Therefore, this experience in creating an R package homogenizing the data analysis methodology in a laboratory shows that if there is interest in developing this approach, further advances in collaboration and reproducibility can be made. Also, based on the R background of the users of the package, the functions were developed using the same the grammar, pipelines, and data visualization practices of tidyverse, which allowed it to be easily adopted by the researchers. 
 
 ## Acknowledgements
-The authors thank the OLS team for their time and dedication in motivating researchers to adopt open software practices. Carolina Giraldo thanks VRI/Faculty of Engineering PUC (Pontificia Universidad Católica de Chile) Ph.D. fellowship.Sara Acevedo thanks the research support provided by CEDEUS (ANID/FONDAP 1522A0002) and the financial support from Postdoctorado Ingeniería PUC 2023. 
+The authors thank the OLS team for their time and dedication in motivating researchers to adopt open software practices. Carolina Giraldo thanks VRI/Faculty of Engineering PUC (Pontificia Universidad Católica de Chile) Ph.D. fellowship. Sara Acevedo thanks the research support provided by CEDEUS (ANID/FONDAP 1522A0002) and the financial support from Postdoctorado Ingeniería PUC 2023. 
 
 
 
